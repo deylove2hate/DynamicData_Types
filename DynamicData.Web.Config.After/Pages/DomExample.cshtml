@@ -1,0 +1,60 @@
+﻿@page
+@model DynamicData.Web.Config.After.Pages.DomExampleModel
+@{
+    ViewData["Title"] = "DOM Example";
+}
+
+<div class="card">
+    <img class="card-img-top" src="/subtitle.png" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">JS Document Object Model Example</h5>
+        <p class="card-text">
+            <hr />
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" required id="name" placeholder="Form Element Name">
+                </div>
+                <div class="col">
+                    <input type="button" name="Submit" id="submit" class="btn btn-primary" value="Create"/>
+                </div>
+            </div>
+            <hr/>
+            <form method="post">
+                @* <div id="dynamicContent"></div>*@
+                @Html.Raw(ViewData["form"])
+
+                <div class="row">
+                    <div >
+                        <input type="submit" class="btn btn-primary" style="float: right;"  value="Save" />
+                    </div>
+                </div>
+
+            </form>
+            <hr/>
+            <div class="row">
+                @Html.Raw(ViewData["data"])
+            </div>
+        </p>
+    </div>
+</div>
+<script>
+
+    $("#submit").click(function () {
+
+        var name = $("#name").val();
+        $("#name").val("");
+
+        var template = "<div class=\"row\"> \n" +
+            "        <div class=\"col-md-2\"> \n" +
+            "<label for=\"df_" + name + "\">" + name + "</label> \n" +
+            "        </div> \n" +
+            "        <div class=\"col-md-10\"> \n" +
+            "            <input type=\"text\" class=\"form-control\" name=\"df_" + name + "\" placeholder=\"enter a value\"> \n" +
+            "        </div> \n" +
+            "      </div><br> \n";
+
+        $("#dynamicContent").append(template);
+
+    });
+
+</script>

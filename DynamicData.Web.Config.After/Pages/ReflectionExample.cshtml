@@ -1,0 +1,43 @@
+﻿@page
+@model DynamicData.Web.Config.After.Pages.ReflectionExampleModel
+@{
+    ViewData["Title"] = "Reflection Example";
+
+    
+}
+<div class="row">
+    <img src="subtitle.png"/>
+</div>
+<br />
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link @(Model.Entity.Equals("people") ? "active" : "")" aria-current="page" href="?entity=people#data">People</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(Model.Entity.Equals("products") ? "active" : "")" href="?entity=products#data">Products</a>
+    </li>
+</ul>
+
+<form method="post">
+    @foreach (var item in Model.MetaData)
+    {
+
+            <div class="form-group">
+                <label for="@item.Name">@item.Name</label>
+                <input type="text" class="form-control" name="df_@item.Name" value="@item.Value">
+            </div>
+
+    }
+   <br/>
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            <input type="submit" class="btn btn-primary" value="Save" />
+        </div>
+    </div>
+
+</form> 
+
+<div class="row" id="data">
+    @Html.Raw(ViewData["data"])
+</div>
+

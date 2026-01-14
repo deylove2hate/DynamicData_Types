@@ -1,0 +1,56 @@
+﻿@page
+@using System.Data
+@using Humanizer
+@model DynamicData.Web.Config.After.Pages.DtExampleModel
+@{
+    ViewData["Title"] = "DataTable Example";
+}
+
+<div class="row">
+    <img src="subtitle.png"/>
+</div>
+<br />
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link @(Model.Entity.Equals("people") ? "active" : "")" 
+           aria-current="page" href="?entity=people">People</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(Model.Entity.Equals("products") ? "active" : "")" 
+           href="?entity=products">Products</a>
+    </li>
+</ul>
+
+<div class="row">
+    <table class="table table-bordered table-hover table-responsive table-striped" id="dataTable" width="100%">
+        <thead class="thead-dark">
+        <tr>
+                @foreach (DataColumn col in Model.Output.Columns)
+            {
+                <th scope="col" style="font-size: small; padding: 2px; word-wrap: break-word;">
+                    @col.Caption.Humanize(LetterCasing.Title)  
+                </th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in Model.Output.Rows)
+        {
+            <tr>
+                    @foreach (DataColumn col in Model.Output.Columns)
+                {
+                    <td style="font-size: small; padding: 2px; word-wrap: break-word;">@row[col.ColumnName].ToString()</td>
+                }
+            </tr>
+        }
+            @if (Model.Output.Rows.Count == 0)
+        {
+            <tr>
+                    <th scope="row" colspan="@Model.Output.Columns.Count" style="text-align: center;">
+                    <em>Data not found.</em>
+                </th>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

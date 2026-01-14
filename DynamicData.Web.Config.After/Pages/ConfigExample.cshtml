@@ -1,0 +1,286 @@
+﻿@page
+@model DynamicData.Web.Config.After.Pages.ConfigExampleModel
+@{
+    ViewData["Title"] = "Configuration Example";
+}
+
+<!-- Page Header -->
+<div class="page-header text-center mb-5">
+    <div class="page-icon mb-3">⚙️</div>
+    <h1 class="display-5 fw-bold gradient-text">Dynamic Configuration</h1>
+    <p class="lead text-muted">Build forms dynamically with configurable fields and validation</p>
+    <div class="page-divider"></div>
+</div>
+
+<!-- Form Section -->
+<div class="form-section">
+    <form method="post" class="dynamic-form">
+        @{
+            int maxRow = Model.Questions.Max(x => x.Row);
+            for (var currentRow = 1; currentRow <= maxRow; currentRow++)
+            {
+                var fullRow = Model.Questions.Where(x => x.Row == currentRow).ToList();
+
+                <div class="form-row row g-3 mb-4">
+                    @foreach (var q in fullRow.OrderBy(x => x.Column))
+                    {
+                        <div class="col-md-@q.Span">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold" for="@q.FieldName">
+                                    @{
+                                        var label = q.FieldLabel;
+                                        if (q.IsRequired)
+                                        {
+                                            label += " <span class=\"required-asterisk\">*</span>";
+                                        }
+                                    }
+                                    @Html.Raw(label)
+                                </label>
+                                <div class="input-wrapper">
+                                    @{
+                                        var control = "";
+                                        var isRequired = "";
+                                        if (q.IsRequired)
+                                        {
+                                            isRequired = "required";
+                                        }
+                                        switch (q.FieldType)
+                                        {
+                                            case FieldTypes.Text:
+                                                control = $"<input type=\"text\" name=\"q_{q.FieldName}\" {isRequired} value=\"{q.FieldValue}\" class=\"form-control modern-input\" placeholder=\"Enter {q.FieldLabel.ToLower()}\">";
+                                                break;
+                                            case FieldTypes.Email:
+                                                control = $"<input type=\"email\" name=\"q_{q.FieldName}\" {isRequired} value=\"{q.FieldValue}\" class=\"form-control modern-input\" placeholder=\"Enter email address\">";
+                                                break;
+                                            case FieldTypes.Number:
+                                                control = $"<input type=\"number\" name=\"q_{q.FieldName}\" {isRequired} value=\"{q.FieldValue}\" class=\"form-control modern-input\" placeholder=\"Enter number\">";
+                                                break;
+                                            case FieldTypes.DropDown:
+                                                control = $"<select class=\"form-select modern-select\" name=\"q_{q.FieldName}\">";
+                                                var fieldValues = q.FieldValue.Split(';');
+                                                var options = fieldValues[1].Split(',');
+                                                var selectedChoice = fieldValues[0];
+                                                control += "<option value=\"\">Select an option</option>";
+                                                foreach (var option in options)
+                                                {
+                                                    control += $"<option value=\"" + option.Trim() + "\" " + (option.Trim().Equals(selectedChoice) ? "selected" : "") + ">" + option.Trim() + "</option>";
+                                                }
+                                                control += "</select>";
+                                                break;
+                                        }
+                                        @Html.Raw(control)
+                                    }
+                                    <div class="input-icon">
+                                        @switch (q.FieldType)
+                                        {
+                                            case FieldTypes.Text:
+                                                <span>📝</span>
+                                                break;
+                                            case FieldTypes.Email:
+                                                <span>📧</span>
+                                                break;
+                                            case FieldTypes.Number:
+                                                <span>🔢</span>
+                                                break;
+                                            case FieldTypes.DropDown:
+                                                <span>📋</span>
+                                                break;
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+
+        <!-- Form Actions -->
+        <div class="form-actions text-center mt-5">
+            <button type="submit" class="btn btn-primary btn-lg me-3">
+                <span class="btn-icon">💾</span>
+                Save Configuration
+            </button>
+            <button type="reset" class="btn btn-outline-secondary btn-lg">
+                <span class="btn-icon">🔄</span>
+                Reset Form
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Info Section -->
+<div class="info-section mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="info-card card">
+                <div class="card-body text-center">
+                    <div class="info-icon mb-3">🎯</div>
+                    <h5 class="card-title">Dynamic Fields</h5>
+                    <p class="card-text">Fields are generated dynamically based on configuration data, allowing for flexible form structures.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="info-card card">
+                <div class="card-body text-center">
+                    <div class="info-icon mb-3">✅</div>
+                    <h5 class="card-title">Validation</h5>
+                    <p class="card-text">Built-in validation ensures data integrity with required field indicators and input type checking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.page-header {
+    padding: 3rem 0;
+}
+
+.page-icon {
+    font-size: 4rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.page-divider {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    margin: 2rem auto;
+    border-radius: 2px;
+}
+
+.dynamic-form {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.modern-input, .modern-select {
+    padding: 1rem 3rem 1rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.modern-input:focus, .modern-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+    transform: translateY(-2px);
+}
+
+.input-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #718096;
+    transition: var(--transition);
+}
+
+.modern-input:focus + .input-icon, .modern-select:focus + .input-icon {
+    color: #667eea;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.required-asterisk {
+    color: #e53e3e;
+    font-weight: bold;
+}
+
+.form-actions {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-icon {
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-outline-secondary {
+    border: 2px solid #718096;
+    color: #718096;
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+}
+
+.btn-outline-secondary:hover {
+    background: #718096;
+    border-color: #718096;
+    transform: translateY(-2px);
+}
+
+.info-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.info-icon {
+    font-size: 3rem;
+    animation: pulse 2s infinite;
+}
+
+@@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@@media (max-width: 768px) {
+    .dynamic-form {
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        margin-bottom: 1rem;
+    }
+
+    .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+</style>
