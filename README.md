@@ -67,7 +67,7 @@ A modern, feature-rich ASP.NET Core web application demonstrating advanced dynam
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/GawdSizwe/DynamicData_Types.git
+   git clone https://github.com/deylove2hate/DynamicData_Types.git
    cd DynamicData_Types
    ```
 
