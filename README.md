@@ -193,11 +193,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
-
-**Sizwe Mazibuko**
-- GitHub: [@GawdSizwe](https://github.com/GawdSizwe)
-- Repository: [DynamicData_Types](https://github.com/GawdSizwe/DynamicData_Types)
 
 ## 🙏 Acknowledgments
 
@@ -226,5 +221,5 @@ Runtime type inspection and property enumeration
 
 Built with ❤️ using ASP.NET Core and modern web technologies.
 
-© 2026 Sizwe Mazibuko. All rights reserved.
+© 2026 Davon William. All rights reserved.
 
